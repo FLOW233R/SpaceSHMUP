@@ -64,6 +64,22 @@ public class Enemy : MonoBehaviour
         Vector3 temPos = pos;//temoporary position
         temPos.y -= speed * Time.deltaTime;
         pos = temPos;
-    }
+    }//end move
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        GameObject otherGO = collision.gameObject;
+        if(otherGO .tag == "Projectile Hero")
+        {
+            Debug.Log("Enemy hit by Projectile Hero " + otherGO.name);
+            Destroy(otherGO);
+            Hero.SHIP.AddScore(score);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log("Enemy hit by non-Projectile Hero " + otherGO.name);
+        }
+    }//end OnCollisionEnter
 
 }

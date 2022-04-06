@@ -41,6 +41,7 @@ public class Hero : MonoBehaviour
     #endregion
 
     GameManager gm; //reference to game manager
+    ObjectPool pool;
 
     [Header("Ship Movement")]
     public float speed = 10;
@@ -50,9 +51,13 @@ public class Hero : MonoBehaviour
 
 
     [Space(10)]
+    [Header("Projectile Settings")]
+   // public GameObject projectilePrefab;
+   // public float projectileSpeed;
 
+    [Space(10)]
     private GameObject lastTriggerGo; //reference to the last triggering game object
-   
+    [Header("Sheild Settings")]
     [SerializeField] //show in inspector
     private float _shieldLevel = 1; //level for shields
     public int maxShield = 4; //maximum shield level
@@ -89,6 +94,7 @@ public class Hero : MonoBehaviour
     private void Start()
     {
         gm = GameManager.GM; //find the game manager
+        pool = ObjectPool.POOL;//find the object pool
     }//end Start()
 
         // Update is called once per frame (page 551)
@@ -109,6 +115,7 @@ public class Hero : MonoBehaviour
 
         //potate the ship to make more dynamic feel
         transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
+
 
         //Allow the ship to fire
         if(Input .GetKeyDown(KeyCode.Space))
@@ -149,10 +156,16 @@ public class Hero : MonoBehaviour
 
     void TempFire()
     {
-        GameObject projGO = Instantiate<GameObject>(projectilePrefab);
-        projGO.transform.position = transform.position;
-        Rigidbody rb = projGO.GetComponent<Rigidbody>();
-        rb.velocity = Vector3.up * projectileSpeed;
+        //GameObject projGO = Instantiate<GameObject>(projectilePrefab);
+
+        GameObject projGO = pool.GetObject();
+
+        if (projGO != null)
+        {
+            projGO.transform.position = transform.position;
+            Rigidbody rb = projGO.GetComponent<Rigidbody>();
+            rb.velocity = Vector3.up * projectileSpeed;
+        }
     }
 
     public void AddScore(int value)
